@@ -43,11 +43,40 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
+    @Transactional
+    public List<Employee> insertEmployees(List<Employee> employeeList) {
+        List<EmployeeEntity> savedEntities = new ArrayList<>();
+
+        for (Employee emp : employeeList) {
+            EmployeeEntity entity = new EmployeeEntity();
+            BeanUtils.copyProperties(emp, entity);
+            savedEntities.add(employeeRepository.save(entity));
+        }
+
+        // Optionally return saved Employee DTOs
+        List<Employee> savedEmployees = new ArrayList<>();
+        for (EmployeeEntity entity : savedEntities) {
+            Employee savedEmp = new Employee();
+            BeanUtils.copyProperties(entity, savedEmp);
+            savedEmployees.add(savedEmp);
+        }
+
+        return savedEmployees;
+    }
+
+
+    @Override
     public boolean deleteEmployee(Long id) {
         EmployeeEntity emp = employeeRepository.findById(id).get();
         employeeRepository.delete(emp);
         return true;
         
+    }
+
+    @Override
+    public String updateEmployee(Long id, Employee employee) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updateEmployee'");
     }
 
 }
